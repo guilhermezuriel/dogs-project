@@ -1,5 +1,5 @@
 import React from 'react';
-import { TOKEN_POST, USER_GET } from './api';
+import { TOKEN_POST, TOKEN_VALIDATE_POST, USER_GET } from './api';
 
 export const UserContext = React.createContext();
 
@@ -8,6 +8,18 @@ export const UserStorage = ({ children }) => {
   const [login, setLogin] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    async function autoLogin() {
+      const token = window.localStorage.getItem('token');
+      if (token) {
+        const { url, options } = TOKEN_VALIDATE_POST(token);
+        const response = fetch(url, options);
+        const json = (await response).json();
+      }
+    }
+    autoLogin();
+  }, []);
 
   async function getUser(token) {
     const { url, options } = USER_GET(token);
@@ -24,6 +36,7 @@ export const UserStorage = ({ children }) => {
     //Destructuring the response to get the token
     const { token } = await tokenRes.json();
     window.localStorage.setItem('token', token);
+    //Another fetch, this one is for getting and setting the user's data
     getUser(token);
   }
   return (
