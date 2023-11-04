@@ -9,18 +9,6 @@ export const UserStorage = ({ children }) => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  React.useEffect(() => {
-    async function autoLogin() {
-      const token = window.localStorage.getItem('token');
-      if (token) {
-        const { url, options } = TOKEN_VALIDATE_POST(token);
-        const response = fetch(url, options);
-        const json = (await response).json();
-      }
-    }
-    autoLogin();
-  }, []);
-
   async function getUser(token) {
     const { url, options } = USER_GET(token);
     const response = await fetch(url, options);
@@ -39,6 +27,15 @@ export const UserStorage = ({ children }) => {
     //Another fetch, this one is for getting and setting the user's data
     getUser(token);
   }
+
+  async function userLogout() {
+    setData(null);
+    setError(null);
+    setLoading(false);
+    setLogin(false);
+    window.localStorage.removeItem('token');
+  }
+
   return (
     <UserContext.Provider value={{ userLogin }}>
       {children}

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as Dogs } from '../Assets/dogs.svg';
 import { UserContext } from '../UserContext';
 const Header = () => {
-  const { data } = React.useContext(UserContext);
+  const { data, userLogout } = React.useContext(UserContext);
   return (
     <header className={styles.header}>
       <nav className={`${styles.nav} container`}>
@@ -14,6 +14,7 @@ const Header = () => {
         {data ? (
           <Link className={styles.login} to="/login">
             {data.username}
+            <button onClick={userLogout}></button>
           </Link>
         ) : (
           <Link className={styles.login} to="/login">
